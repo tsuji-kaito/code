@@ -1,0 +1,27 @@
+# calculate dif gamma divergence for R
+
+
+calc_gamma_div <- function(x1, x2, x3, x4, gamma=0.01){
+  n <- length(x1)
+  x1_dens <- density(x1)$y
+  x2_dens <- density(x2)$y
+  x3_dens <- density(x3)$y
+  x4_dens <- density(x4)$y
+
+  formula1 <- sum(x1_dens^gamma * x2^gamma) / n
+  formula2 <- (sum(x1_dens-gamma) / n ) * (sum(x2_dens^gamma) / n )
+  formula3 <- sum(x3_dens^gamma * x4_dens^gamma) / n
+  formula4 <- (sum(x3_dens^gamma) / n ) * (sum(x4_dens^gamma) / n )
+
+  gamma_div <- (-1 / gamma) * log(formula1) + (1/(1+gamma)) * log(formula2) + (1/gamma)* log(formula3) - (1/(1+gamma) * log(formula4))
+
+  if(gamma_div > 0){
+    parent <- as.character(substitute(x3))
+  } else {
+    parent <- as.character(substitute(x1))
+  }
+
+  return_info <- list(dif_gamma_div = gamma_div, parent = parent)
+
+  return(return_info)
+}
